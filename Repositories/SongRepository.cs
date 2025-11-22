@@ -12,9 +12,9 @@ namespace MiniSpotify.Repositories
             _db = db;
         }
 
-        public async Task Add(Song book)
+        public async Task Add(Song song)
         {
-            await _db.Songs.AddAsync(book);
+            await _db.Songs.AddAsync(song);
             await _db.SaveChangesAsync();
         }
 
@@ -27,14 +27,14 @@ namespace MiniSpotify.Repositories
         {
             return await _db.Songs.FirstOrDefaultAsync(x => x.Id == id);
         }
-        public async Task Update(Song book)
+        public async Task Update(Song song)
         {
-            _db.Songs.Update(book);
+            _db.Songs.Update(song);
             await _db.SaveChangesAsync();
         }
-        public async Task Delete(Song book)
+        public async Task Delete(Song song)
         {
-            _db.Songs.Remove(book);
+            _db.Songs.Remove(song);
             await _db.SaveChangesAsync();
         }
 
