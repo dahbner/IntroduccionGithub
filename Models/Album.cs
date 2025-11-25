@@ -6,7 +6,7 @@ namespace MiniSpotify.Models
     public class Album
     {
         [Key] public Guid Id { get; set; }
-        [Required] [MaxLength(150)] public string Title { get; set; }
+        [Required] [MaxLength(150)] public string Title { get; set; } 
         public DateTime ReleaseDate { get; set; }
         [Url] public string? CoverUrl { get; set; }
 
