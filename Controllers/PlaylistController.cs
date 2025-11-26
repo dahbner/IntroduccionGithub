@@ -27,9 +27,7 @@ namespace MiniSpotify.Controllers
             
             return Guid.Parse(idClaim.Value);
         }
-
-        [HttpGet]
-        [Authorize]
+        
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetAllPlaylists()
@@ -90,6 +88,33 @@ namespace MiniSpotify.Controllers
             }
             catch (UnauthorizedAccessException) { return Forbid(); }
             catch (KeyNotFoundException) { return NotFound(); }
+        }
+        [HttpPost("{id:guid}/songs/{songId:guid}")]
+        [Authorize]
+        public async Task<IActionResult> AddSongToPlaylist(Guid id, Guid songId)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                await _service.AddSongToPlaylist(id, songId, userId);
+                return Ok(new { message = "Song added to playlist" });
+            }
+            catch (UnauthorizedAccessException) { return Forbid(); }
+            catch (KeyNotFoundException ex) { return NotFound(new { message = ex.Message }); }
+        }
+
+        [HttpDelete("{id:guid}/songs/{songId:guid}")]
+        [Authorize]
+        public async Task<IActionResult> RemoveSongFromPlaylist(Guid id, Guid songId)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                await _service.RemoveSongFromPlaylist(id, songId, userId);
+                return NoContent();
+            }
+            catch (UnauthorizedAccessException) { return Forbid(); }
+            catch (KeyNotFoundException ex) { return NotFound(new { message = ex.Message }); }
         }
     }
 }

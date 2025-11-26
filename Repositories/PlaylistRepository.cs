@@ -47,5 +47,37 @@ namespace MiniSpotify.Repositories
             _db.Playlists.Remove(playlist);
             await _db.SaveChangesAsync();
         }
+        public async Task AddSong(Guid playlistId, Guid songId)
+        {
+            var playlist = await _db.Playlists
+                .Include(p => p.Songs)
+                .FirstOrDefaultAsync(p => p.Id == playlistId);
+
+            var song = await _db.Songs.FindAsync(songId);
+
+            if (playlist != null && song != null)
+            {
+                if (!playlist.Songs.Any(s => s.Id == songId))
+                {
+                    playlist.Songs.Add(song);
+                    await _db.SaveChangesAsync();
+                }
+            }
+        }
+
+        public async Task RemoveSong(Guid playlistId, Guid songId)
+        {
+            var playlist = await _db.Playlists
+                .Include(p => p.Songs)
+                .FirstOrDefaultAsync(p => p.Id == playlistId);
+            
+            var song = playlist?.Songs.FirstOrDefault(s => s.Id == songId);
+
+            if (playlist != null && song != null)
+            {
+                playlist.Songs.Remove(song);
+                await _db.SaveChangesAsync();
+            }
+        }
     }
 }

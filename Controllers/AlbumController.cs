@@ -11,6 +11,7 @@ namespace MiniSpotify.Controllers
     public class AlbumController : ControllerBase
     {
         private readonly IAlbumService _service;
+
         public AlbumController(IAlbumService service)
         {
             _service = service;
@@ -23,42 +24,45 @@ namespace MiniSpotify.Controllers
             return Ok(items);
         }
 
-
         [HttpGet("{id:guid}")]
         [Authorize]
         public async Task<IActionResult> GetOne(Guid id)
         {
             var album = await _service.GetOne(id);
+            if (album == null) return NotFound();
             return Ok(album);
         }
 
-
         [HttpPost]
         [Authorize(Policy = "AdminOnly")]
-        public async Task<IActionResult> CreateAlbum([FromBody] CreateAlbumDto dto,Guid id)
+        public async Task<IActionResult> CreateAlbum([FromBody] CreateAlbumDto dto)
         {
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
-            var album = await _service.CreateAlbum(dto,id);
+            
+            var album = await _service.CreateAlbum(dto);
+            
             return CreatedAtAction(nameof(GetOne), new { id = album.Id }, album);
         }
 
-
-
         [HttpPut("{id:guid}")]
         [Authorize(Policy = "AdminOnly")]
-        public async Task<IActionResult> UpdateAlbum([FromBody] UpdateAlbumDto dto, Guid id,Guid albumId)
+        public async Task<IActionResult> UpdateAlbum([FromBody] UpdateAlbumDto dto, Guid id)
         {
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
-            var album = await _service.UpdateAlbum(dto, id,albumId);
-            return CreatedAtAction(nameof(GetOne), new { id = album.Id }, album);
+            
+            try 
+            {
+                var album = await _service.UpdateAlbum(dto, id);
+                return Ok(album);
+            }
+            catch (KeyNotFoundException) { return NotFound(); }
         }
 
         [HttpDelete("{id:guid}")]
         [Authorize(Policy = "AdminOnly")]
-        public async Task<IActionResult> DeleteAlbum(Guid id,Guid albumId)
+        public async Task<IActionResult> DeleteAlbum(Guid id)
         {
-            if (!ModelState.IsValid) return ValidationProblem(ModelState);
-            await _service.DeleteAlbum(id,albumId);
+            await _service.DeleteAlbum(id);
             return NoContent();
         }
     }

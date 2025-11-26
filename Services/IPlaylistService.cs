@@ -10,5 +10,7 @@ namespace MiniSpotify.Services
         Task<Playlist> CreatePlaylist(CreatePlaylistDto dto, Guid userId);
         Task<Playlist> UpdatePlaylist(UpdatePlaylistDto dto, Guid id, Guid userId);
         Task DeletePlaylist(Guid id, Guid userId);
+        Task AddSongToPlaylist(Guid playlistId, Guid songId, Guid userId);
+        Task RemoveSongFromPlaylist(Guid playlistId, Guid songId, Guid userId);
     }
 }

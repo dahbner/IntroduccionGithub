@@ -67,5 +67,26 @@ namespace MiniSpotify.Services
 
             await _playlistRepo.Delete(playlist);
         }
+        public async Task AddSongToPlaylist(Guid playlistId, Guid songId, Guid userId)
+        {
+            var playlist = await _playlistRepo.GetOne(playlistId);
+            if (playlist == null) throw new KeyNotFoundException("Playlist not found");
+    
+            if (playlist.UserId != userId) 
+                throw new UnauthorizedAccessException("You do not own this playlist");
+            
+            await _playlistRepo.AddSong(playlistId, songId);
+        }
+
+        public async Task RemoveSongFromPlaylist(Guid playlistId, Guid songId, Guid userId)
+        {
+            var playlist = await _playlistRepo.GetOne(playlistId);
+            if (playlist == null) throw new KeyNotFoundException("Playlist not found");
+    
+            if (playlist.UserId != userId) 
+                throw new UnauthorizedAccessException("You do not own this playlist");
+            
+            await _playlistRepo.RemoveSong(playlistId, songId);
+        }
     }
 }

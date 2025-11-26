@@ -7,34 +7,30 @@ namespace MiniSpotify.Services
     public class AlbumService : IAlbumService
     {
         private readonly IAlbumRepository _albumRepo;
-        public AlbumService(IAlbumRepository albumRepo)
+        // private readonly IArtistRepository _artistRepo; 
+
+        public AlbumService(IAlbumRepository albumRepo /*, IArtistRepository artistRepo */)
         {
             _albumRepo = albumRepo;
+            // _artistRepo = artistRepo;
         }
 
-
-        public async Task<Album> CreateAlbum(CreateAlbumDto dto, Guid albumId)
+        public async Task<Album> CreateAlbum(CreateAlbumDto dto)
         {
-            Album? album = await _albumRepo.GetOne(albumId);
-            if (album == null) throw new Exception("The album doesnt exist:");
-            var Album = new Album
+            // var artist = await _artistRepo.GetOne(dto.ArtistId);
+            // if (artist == null) throw new KeyNotFoundException("Artist not found");
+
+            var album = new Album
             {
                 Id = Guid.NewGuid(),
                 Title = dto.Title,
-                ReleaseDate = dto.ReleaseDate
-
+                ReleaseDate = dto.ReleaseDate,
+                CoverUrl = dto.CoverUrl,
+                ArtistId = dto.ArtistId
             };
+
             await _albumRepo.Add(album);
             return album;
-        }
-
-        public async Task DeleteAlbum(Guid id, Guid albumId)
-        {
-            Album? album = (await GetAll()).FirstOrDefault(h => h.Id == id);
-            if (album == null) return;
-            if (album.Id != albumId) throw new Exception("Not authorized to delete this album:");
-
-            await _albumRepo.Delete(album);
         }
 
         public async Task<IEnumerable<Album>> GetAll()
@@ -42,22 +38,31 @@ namespace MiniSpotify.Services
             return await _albumRepo.GetAll();
         }
 
-        public async Task<Album> GetOne(Guid id)
+        public async Task<Album?> GetOne(Guid id)
         {
             return await _albumRepo.GetOne(id);
         }
 
-        public async Task<Album> UpdateAlbum(UpdateAlbumDto dto, Guid id, Guid albumId)
+        public async Task<Album> UpdateAlbum(UpdateAlbumDto dto, Guid id)
         {
-            Album? album = await GetOne(id);
-            if (album == null) throw new Exception("The album you're looking for doesnt exist.");
-
-            if (album.Id != albumId) throw new Exception("Not authorized to update this album.");
-
+            Album? album = await _albumRepo.GetOne(id);
+            if (album == null) throw new KeyNotFoundException("Album not found");
+            
             album.Title = dto.Title;
+            album.ReleaseDate = dto.ReleaseDate;
+            if(dto.CoverUrl != null) album.CoverUrl = dto.CoverUrl;
 
             await _albumRepo.Update(album);
             return album;
+        }
+
+        public async Task DeleteAlbum(Guid id)
+        {
+            Album? album = await _albumRepo.GetOne(id);
+            if (album != null)
+            {
+                await _albumRepo.Delete(album);
+            }
         }
     }
 }

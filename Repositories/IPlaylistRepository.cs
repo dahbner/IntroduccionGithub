@@ -9,5 +9,7 @@ namespace MiniSpotify.Repositories
         Task Add(Playlist playlist);
         Task Update(Playlist playlist);
         Task Delete(Playlist playlist);
+        Task AddSong(Guid playlistId, Guid songId);
+        Task RemoveSong(Guid playlistId, Guid songId);
     }
 }
