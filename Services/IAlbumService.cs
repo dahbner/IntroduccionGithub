@@ -9,7 +9,5 @@ namespace MiniSpotify.Services
         Task<Album> CreateAlbum(CreateAlbumDto dto, Guid artistId);
         Task<Album> UpdateAlbum(UpdateAlbumDto dto, Guid id,  Guid albumId);
         Task DeleteAlbum(Guid id, Guid userId);
-        
-
     }
 }

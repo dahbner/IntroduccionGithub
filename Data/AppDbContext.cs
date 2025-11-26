@@ -9,7 +9,6 @@ namespace MiniSpotify.Data
         {
         }
         public DbSet<User> Users => Set<User>();
-        public DbSet<Book> Books => Set<Book>();
         
         public DbSet<Song> Songs { get; set; }
         public DbSet<Playlist> Playlists { get; set; }
@@ -20,7 +19,7 @@ namespace MiniSpotify.Data
             base.OnModelCreating(modelBuilder);
             
             modelBuilder.Entity<User>();
-            modelBuilder.Entity<Book>();
+            modelBuilder.Entity<Song>();
             
             modelBuilder.Entity<Playlist>()
                 .HasMany(p => p.Songs)
