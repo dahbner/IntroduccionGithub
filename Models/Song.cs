@@ -19,7 +19,7 @@ namespace MiniSpotify.Models
         [ForeignKey("AlbumId")]
         [JsonIgnore]
         public Album Album { get; set; }
-        
+        [JsonIgnore]
         public ICollection<Playlist> Playlists { get; set; } = new List<Playlist>();
     }
 }

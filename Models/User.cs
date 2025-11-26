@@ -4,6 +4,7 @@ namespace MiniSpotify.Models
 {
     public class User
     {
+        [Key]
         public Guid Id { get; set; }
         public string Username { get; set; }
         public string Email { get; set; }
@@ -13,5 +14,6 @@ namespace MiniSpotify.Models
         public DateTime? RefreshTokenExpiresAt { get; set; }
         public DateTime? RefreshTokenRevokedAt { get; set; }
         public string? CurrentJwtId { get; set; }
+        public ICollection<Playlist> Playlists { get; set; } = new List<Playlist>();
     }
 }
