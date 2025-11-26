@@ -6,7 +6,7 @@ namespace MiniSpotify.Models
     public class Artist
     {
         [Key]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } //ErrorMessage
         [Required(ErrorMessage = "Name is required")]
         [MaxLength(100)]
         public string Name { get; set; }
