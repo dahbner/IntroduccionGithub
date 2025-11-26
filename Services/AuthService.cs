@@ -118,9 +118,9 @@ namespace MiniSpotify.Services
         private (string token, int expiresInSeconds, string jti) GenerateJwtToken(User user)
         {
             var jwtSection = _configuration.GetSection("Jwt");
-            var key = jwtSection["Key"]!;
-            var issuer = jwtSection["Issuer"];
-            var audience = jwtSection["Audience"];
+            var key = _configuration["JWT_KEY"];
+            var issuer = _configuration["JWT_ISSUER"];
+            var audience = _configuration["JWT_AUDIENCE"]; 
             var expireMinutes = int.Parse(jwtSection["ExpiresMinutes"] ?? "60");
 
             var jti = Guid.NewGuid().ToString();
@@ -133,7 +133,7 @@ namespace MiniSpotify.Services
                 new Claim(JwtRegisteredClaimNames.Jti, jti),
             };
 
-            var keyBytes = Encoding.UTF8.GetBytes(key);
+            var keyBytes = Convert.FromBase64String(key!);
             var creds = new SigningCredentials(new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256);
 
             var expires = DateTime.UtcNow.AddMinutes(expireMinutes);

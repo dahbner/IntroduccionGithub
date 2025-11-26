@@ -6,7 +6,7 @@ using MiniSpotify.Services;
 namespace MiniSpotify.Controllers
 {
     [ApiController]
-    [Route("api/v1/[Controller]")]
+    [Route("api/[Controller]")]
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _service;
