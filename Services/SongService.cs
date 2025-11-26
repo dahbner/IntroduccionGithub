@@ -34,7 +34,7 @@ namespace MiniSpotify.Services
             return await _songRepo.GetAll();
         }
 
-        public async Task<Song> GetOne(Guid id)
+        public async Task<Song?> GetOne(Guid id)
         {
             return await _songRepo.GetOne(id);
         }
@@ -55,7 +55,7 @@ namespace MiniSpotify.Services
         }
         public async Task DeleteSong(Guid id)
         {
-            Song? song = (await GetAll()).FirstOrDefault(h => h.Id == id);
+            Song? song = await _songRepo.GetOne(id);
             if (song == null) return;
             await _songRepo.Delete(song);
         }

@@ -20,12 +20,18 @@ namespace MiniSpotify.Repositories
 
         public async Task<IEnumerable<Song>> GetAll()
         {
-            return await _db.Songs.ToListAsync();
+            return await _db.Songs
+                .Include(s => s.Album)
+                .ThenInclude(a => a.Artist)
+                .ToListAsync();
         }
 
         public async Task<Song?> GetOne(Guid id)
         {
-            return await _db.Songs.FirstOrDefaultAsync(x => x.Id == id);
+            return await _db.Songs
+                .Include(s => s.Album)
+                .ThenInclude(a => a.Artist)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
         public async Task Update(Song song)
         {
