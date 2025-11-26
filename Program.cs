@@ -138,25 +138,42 @@ builder.Services.AddScoped<IPlaylistService, PlaylistService>();
 builder.Services.AddScoped<ISongRepository, SongRepository>();
 builder.Services.AddScoped<ISongService, SongService>();
 
-
 // CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
-    {
-        policy.AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader();
-    });
+    // 1. Development Policy
     options.AddPolicy("Dev", policy =>
     {
         policy.WithOrigins(
-                "https://localhost:7143"
+                "https://localhost:7143", // Your API HTTPS
+                "http://localhost:5037"   // Your API HTTP
             )
             .AllowAnyMethod()
-            .AllowAnyHeader();
+            .AllowAnyHeader()
+            .AllowCredentials();
+    });
+
+    // 2. Production Policy
+    options.AddPolicy("Prod", policy =>
+    {
+        var productionOrigins = Environment.GetEnvironmentVariable("ALLOWED_ORIGINS");
+
+        if (!string.IsNullOrEmpty(productionOrigins))
+        {
+            policy.WithOrigins(productionOrigins.Split(','))
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();
+        }
+        else
+        {
+            policy.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        }
     });
 });
+
 // Rate Limiting
 builder.Services.AddRateLimiter(options =>
 {
@@ -177,12 +194,17 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.UseSwagger();
-    app.UseSwaggerUI(); 
+    app.UseSwaggerUI();
+    
+    app.UseCors("Dev");
+}
+else
+{
+    app.UseCors("Prod");
 }
 
 app.UseHttpsRedirection();
 
-app.UseCors("Dev"); // Change for deployment
 app.UseRateLimiter();
 
 app.UseAuthentication();
