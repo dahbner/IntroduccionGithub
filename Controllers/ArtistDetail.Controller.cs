@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MiniSpotify.Models;
 using MiniSpotify.Models.DTOS;
 using MiniSpotify.Services;
 
@@ -17,7 +18,7 @@ namespace MiniSpotify.Controllers
         }
 
         [HttpGet("{artistId}")]
-        public async Task<ActionResult<ArtistDetailResponseDto>> GetByArtistId(Guid artistId)
+        public async Task<ActionResult<ArtistDetail>> GetByArtistId(Guid artistId)
         {
             var result = await _service.GetByArtistIdAsync(artistId);
             if (result == null) return NotFound();
@@ -26,7 +27,7 @@ namespace MiniSpotify.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<ArtistDetailResponseDto>> Create(CreateArtistDetailDto dto)
+        public async Task<ActionResult<ArtistDetail>> Create(CreateArtistDetailDto dto)
         {
             try
             {

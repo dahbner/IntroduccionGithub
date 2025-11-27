@@ -1,11 +1,12 @@
-﻿using MiniSpotify.Models.DTOS;
+﻿using MiniSpotify.Models;
+using MiniSpotify.Models.DTOS;
 
 namespace MiniSpotify.Services
 {
     public interface IArtistDetailService
     {
-        Task<ArtistDetailResponseDto?> GetByArtistIdAsync(Guid artistId);
-        Task<ArtistDetailResponseDto> CreateAsync(CreateArtistDetailDto dto);
+        Task<ArtistDetail?> GetByArtistIdAsync(Guid artistId);
+        Task<ArtistDetail> CreateAsync(CreateArtistDetailDto dto);
         Task<bool> UpdateAsync(Guid artistId, UpdateArtistDetailDto dto);
     }
 }
