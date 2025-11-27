@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization; // NECESARIO PARA SEGURIDAD
+using Microsoft.AspNetCore.Mvc;
 using MiniSpotify.Models;
 using MiniSpotify.Models.DTOS;
 using MiniSpotify.Services;
@@ -31,6 +32,7 @@ namespace MiniSpotify.Controllers
         }
 
         [HttpPost]
+        [Authorize] 
         public async Task<ActionResult<Artist>> Create(CreateArtistDto dto)
         {
             var result = await _service.CreateAsync(dto);
@@ -38,6 +40,7 @@ namespace MiniSpotify.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> Update(Guid id, UpdateArtistDto dto)
         {
             var result = await _service.UpdateAsync(id, dto);
@@ -46,6 +49,7 @@ namespace MiniSpotify.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize] 
         public async Task<IActionResult> Delete(Guid id)
         {
             var result = await _service.DeleteAsync(id);
