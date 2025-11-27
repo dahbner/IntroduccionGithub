@@ -20,7 +20,7 @@ namespace MiniSpotify.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllAlbums()
         {
-            IEnumerable<Album> items = await _service.GetAll();
+            IEnumerable<AlbumResponseDto> items = await _service.GetAll();
             return Ok(items);
         }
 

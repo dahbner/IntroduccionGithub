@@ -7,18 +7,18 @@ namespace MiniSpotify.Services
     public class AlbumService : IAlbumService
     {
         private readonly IAlbumRepository _albumRepo;
-        // private readonly IArtistRepository _artistRepo; 
+        private readonly IArtistRepository _artistRepo; 
 
-        public AlbumService(IAlbumRepository albumRepo /*, IArtistRepository artistRepo */)
+        public AlbumService(IAlbumRepository albumRepo, IArtistRepository artistRepo)
         {
             _albumRepo = albumRepo;
-            // _artistRepo = artistRepo;
+            _artistRepo = artistRepo;
         }
 
-        public async Task<Album> CreateAlbum(CreateAlbumDto dto)
+        public async Task<AlbumResponseDto> CreateAlbum(CreateAlbumDto dto)
         {
-            // var artist = await _artistRepo.GetOne(dto.ArtistId);
-            // if (artist == null) throw new KeyNotFoundException("Artist not found");
+            var artist = await _artistRepo.GetByIdAsync(dto.ArtistId);
+            if (artist == null) throw new KeyNotFoundException("Artist not found");
 
             var album = new Album
             {
@@ -30,20 +30,60 @@ namespace MiniSpotify.Services
             };
 
             await _albumRepo.Add(album);
-            return album;
+
+            var albumResponse = new AlbumResponseDto
+            {
+                Id = album.Id,
+                Title = album.Title,
+                ReleaseDate = album.ReleaseDate,
+                CoverUrl = album.CoverUrl,
+                Artist = artist.Name,
+                Songs = new List<SongResponseDto>()
+            };
+            return albumResponse;
         }
 
-        public async Task<IEnumerable<Album>> GetAll()
+        public async Task<IEnumerable<AlbumResponseDto>> GetAll()
         {
-            return await _albumRepo.GetAll();
+            var albums = await _albumRepo.GetAll();
+            return albums.Select(a => new AlbumResponseDto
+            {
+                Id = a.Id,
+                Title = a.Title,
+                ReleaseDate = a.ReleaseDate,
+                CoverUrl = a.CoverUrl,
+                Artist = a.Artist.Name,
+                Songs = a.Songs.Select(s => new SongResponseDto
+                {
+                    Id = s.Id,
+                    Album = s.Album.Title,
+                    DurationSeconds = s.DurationSeconds,
+                    Title = s.Title
+                }).ToList()
+            });
         }
 
-        public async Task<Album?> GetOne(Guid id)
+        public async Task<AlbumResponseDto?> GetOne(Guid id)
         {
-            return await _albumRepo.GetOne(id);
+            var album= await _albumRepo.GetOne(id);
+            return new AlbumResponseDto
+            {
+                Id = album.Id,
+                Title = album.Title,
+                ReleaseDate = album.ReleaseDate,
+                CoverUrl = album.CoverUrl,
+                Artist = album.Artist.Name,
+                Songs = album.Songs.Select(s => new SongResponseDto
+                {
+                    Id = s.Id,
+                    Album = s.Album.Title,
+                    DurationSeconds = s.DurationSeconds,
+                    Title = s.Title
+                }).ToList()
+            };
         }
 
-        public async Task<Album> UpdateAlbum(UpdateAlbumDto dto, Guid id)
+        public async Task<AlbumResponseDto> UpdateAlbum(UpdateAlbumDto dto, Guid id)
         {
             Album? album = await _albumRepo.GetOne(id);
             if (album == null) throw new KeyNotFoundException("Album not found");
@@ -53,7 +93,22 @@ namespace MiniSpotify.Services
             if(dto.CoverUrl != null) album.CoverUrl = dto.CoverUrl;
 
             await _albumRepo.Update(album);
-            return album;
+            
+            return new AlbumResponseDto
+            {
+                Id = album.Id,
+                Title = album.Title,
+                ReleaseDate = album.ReleaseDate,
+                CoverUrl = album.CoverUrl,
+                Artist = album.Artist.Name,
+                Songs = album.Songs.Select(s => new SongResponseDto
+                {
+                    Id = s.Id,
+                    Album = s.Album.Title,
+                    DurationSeconds = s.DurationSeconds,
+                    Title = s.Title
+                }).ToList()
+            };
         }
 
         public async Task DeleteAlbum(Guid id)

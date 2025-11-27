@@ -4,10 +4,10 @@ namespace MiniSpotify.Services
 {
     public interface IAlbumService
     {
-        Task<IEnumerable<Album>> GetAll();
-        Task<Album?> GetOne(Guid id);
-        Task<Album> CreateAlbum(CreateAlbumDto dto);
-        Task<Album> UpdateAlbum(UpdateAlbumDto dto, Guid id);
+        Task<IEnumerable<AlbumResponseDto>> GetAll();
+        Task<AlbumResponseDto?> GetOne(Guid id);
+        Task<AlbumResponseDto> CreateAlbum(CreateAlbumDto dto);
+        Task<AlbumResponseDto> UpdateAlbum(UpdateAlbumDto dto, Guid id);
         Task DeleteAlbum(Guid id);
     }
 }
