@@ -15,7 +15,7 @@ namespace MiniSpotify.Services
             _userRepo = userRepo;
         }
 
-        public async Task<Playlist> CreatePlaylist(CreatePlaylistDto dto, Guid userId)
+        public async Task<PlaylistResponseDto> CreatePlaylist(CreatePlaylistDto dto, Guid userId)
         {
             User? user = await _userRepo.GetById(userId);
             if (user == null) throw new KeyNotFoundException("User not found");
@@ -29,20 +29,77 @@ namespace MiniSpotify.Services
             };
             
             await _playlistRepo.Add(playlist);
-            return playlist;
+            
+            return new PlaylistResponseDto
+            {
+                Id= playlist.Id,
+                IsPublic =  playlist.IsPublic,
+                Name = playlist.Name,
+                User = new UserResponse
+                {
+                    Id = playlist.UserId.ToString(),
+                    Email =  playlist.User.Email,
+                    Username =  playlist.User.Username,
+                },
+                Songs = playlist.Songs.Select(s=>new SongResponseDto
+                {
+                    Id = s.Id,
+                    Album = s.Album.Title,
+                    DurationSeconds = s.DurationSeconds,
+                    Title = s.Title
+                }).ToList()
+            };
         }
 
-        public async Task<IEnumerable<Playlist>> GetAll(Guid userId)
+        public async Task<IEnumerable<PlaylistResponseDto>> GetAll(Guid userId)
         {
-            return await _playlistRepo.GetAll(userId);
+            var playlists= await _playlistRepo.GetAll(userId);
+            return playlists.Select(playlist => new PlaylistResponseDto
+            {
+                Id = playlist.Id,
+                IsPublic = playlist.IsPublic,
+                Name = playlist.Name,
+                User = new UserResponse
+                {
+                    Id = playlist.UserId.ToString(),
+                    Email = playlist.User.Email,
+                    Username = playlist.User.Username,
+                },
+                Songs = playlist.Songs.Select(s => new SongResponseDto
+                {
+                    Id = s.Id,
+                    Album = s.Album.Title,
+                    DurationSeconds = s.DurationSeconds,
+                    Title = s.Title
+                }).ToList()
+            });
         }
 
-        public async Task<Playlist?> GetOne(Guid id)
+        public async Task<PlaylistResponseDto?> GetOne(Guid id)
         {
-            return await _playlistRepo.GetOne(id);
+            var playlist= await _playlistRepo.GetOne(id);
+            return new PlaylistResponseDto
+            {
+                Id= playlist.Id,
+                IsPublic =  playlist.IsPublic,
+                Name = playlist.Name,
+                User = new UserResponse
+                {
+                    Id = playlist.UserId.ToString(),
+                    Email =  playlist.User.Email,
+                    Username =  playlist.User.Username,
+                },
+                Songs = playlist.Songs.Select(s=>new SongResponseDto
+                {
+                    Id = s.Id,
+                    Album = s.Album.Title,
+                    DurationSeconds = s.DurationSeconds,
+                    Title = s.Title
+                }).ToList()
+            };
         }
 
-        public async Task<Playlist> UpdatePlaylist(UpdatePlaylistDto dto, Guid id, Guid userId)
+        public async Task<PlaylistResponseDto> UpdatePlaylist(UpdatePlaylistDto dto, Guid id, Guid userId)
         {
             Playlist? playlist = await _playlistRepo.GetOne(id);
             if (playlist == null) throw new KeyNotFoundException("Playlist not found");
@@ -54,7 +111,25 @@ namespace MiniSpotify.Services
             playlist.IsPublic = dto.IsPublic;
 
             await _playlistRepo.Update(playlist);
-            return playlist;
+            return new PlaylistResponseDto
+            {
+                Id= playlist.Id,
+                IsPublic =  playlist.IsPublic,
+                Name = playlist.Name,
+                User = new UserResponse
+                {
+                    Id = playlist.UserId.ToString(),
+                    Email =  playlist.User.Email,
+                    Username =  playlist.User.Username,
+                },
+                Songs = playlist.Songs.Select(s=>new SongResponseDto
+                {
+                    Id = s.Id,
+                    Album = s.Album.Title,
+                    DurationSeconds = s.DurationSeconds,
+                    Title = s.Title
+                }).ToList()
+            };;
         }
 
         public async Task DeletePlaylist(Guid id, Guid userId)

@@ -33,7 +33,7 @@ namespace MiniSpotify.Controllers
         public async Task<IActionResult> GetAllPlaylists()
         {
             var userId = GetCurrentUserId();
-            IEnumerable<Playlist> items = await _service.GetAll(userId);
+            IEnumerable<PlaylistResponseDto> items = await _service.GetAll(userId);
             return Ok(items);
         }
 
