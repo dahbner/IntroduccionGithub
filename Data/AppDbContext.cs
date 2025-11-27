@@ -9,11 +9,12 @@ namespace MiniSpotify.Data
         {
         }
 
-        // Entidades existentes
         public DbSet<User> Users => Set<User>();
-        public DbSet<Book> Books => Set<Book>(); 
+        public DbSet<Book> Books => Set<Book>();
         public DbSet<Artist> Artists => Set<Artist>();
         public DbSet<ArtistDetail> ArtistDetails => Set<ArtistDetail>();
+
+        public DbSet<Album> Albums => Set<Album>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -31,13 +32,24 @@ namespace MiniSpotify.Data
                 entity.HasOne(a => a.ArtistDetail)
                       .WithOne(ad => ad.Artist)
                       .HasForeignKey<ArtistDetail>(ad => ad.ArtistId)
-                      .OnDelete(DeleteBehavior.Cascade); 
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(a => a.Albums)
+                      .WithOne(al => al.Artist)
+                      .HasForeignKey(al => al.ArtistId)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<ArtistDetail>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id).ValueGeneratedOnAdd(); 
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+            });
+
+            modelBuilder.Entity<Album>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
             });
         }
     }

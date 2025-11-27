@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace MiniSpotify.Models
 {
@@ -21,6 +22,7 @@ namespace MiniSpotify.Models
         public Guid ArtistId { get; set; }
 
         [ForeignKey("ArtistId")]
+        [JsonIgnore]
         public Artist Artist { get; set; }
     }
 }
