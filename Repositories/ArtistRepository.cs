@@ -17,7 +17,8 @@ namespace MiniSpotify.Repositories
         {
             return await _context.Artists
                 .Include(a => a.ArtistDetail)
-                .Include(a => a.Albums) 
+                .Include(a => a.Albums)
+                .ThenInclude(a=>a.Songs)
                 .ToListAsync();
         }
 

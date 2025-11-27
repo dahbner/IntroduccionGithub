@@ -20,6 +20,14 @@ namespace MiniSpotify.Services
             {
                 Id = a.Id,
                 Name = a.Name,
+                Genre = a.Genre,
+                ArtistDetail = new ArtistDetailResponseDto
+                {
+                  Id  = a.ArtistDetail.Id,
+                  Biography = a.ArtistDetail.Biography,
+                  ManagerContact = a.ArtistDetail.ManagerContact,
+                  WebsiteUrl = a.ArtistDetail.WebsiteUrl,
+                },
                 Albums = a.Albums.Select(al => new AlbumResponseDto
                 {
                     Id = al.Id,
@@ -27,6 +35,13 @@ namespace MiniSpotify.Services
                     Title = al.Title,
                     CoverUrl = al.CoverUrl,
                     ReleaseDate = al.ReleaseDate,
+                    Songs = al.Songs.Select(s=>new SongResponseDto
+                    {
+                        Id=s.Id,
+                        Album = s.Album.Title,
+                        Title = s.Title,
+                        DurationSeconds = s.DurationSeconds
+                    }).ToList()
                 }).ToList()
             }).ToList();
         }
@@ -53,6 +68,13 @@ namespace MiniSpotify.Services
                     Title = al.Title,
                     CoverUrl = al.CoverUrl,
                     ReleaseDate = al.ReleaseDate,
+                    Songs =  al.Songs.Select(s=>new SongResponseDto
+                    {
+                        Id=s.Id,
+                        Album = s.Album.Title,
+                        Title = s.Title,
+                        DurationSeconds = s.DurationSeconds
+                    }).ToList()
                 }).ToList()
             };
         }
@@ -86,6 +108,13 @@ namespace MiniSpotify.Services
                     Title = al.Title,
                     CoverUrl = al.CoverUrl,
                     ReleaseDate = al.ReleaseDate,
+                    Songs = al.Songs.Select(s=>new SongResponseDto
+                    {
+                        Id=s.Id,
+                        Album = s.Album.Title,
+                        Title = s.Title,
+                        DurationSeconds = s.DurationSeconds
+                    }).ToList()
                 }).ToList()
             };
         }

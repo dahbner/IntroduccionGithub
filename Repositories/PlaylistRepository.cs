@@ -24,6 +24,8 @@ namespace MiniSpotify.Repositories
             return await _db.Playlists
                 .Where(p => p.IsPublic == true || p.UserId == userId)
                 .Include(p => p.User)
+                .Include(p => p.Songs)
+                .ThenInclude(s => s.Album)
                 .ToListAsync();
         }
 
