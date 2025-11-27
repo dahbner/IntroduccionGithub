@@ -137,6 +137,10 @@ builder.Services.AddScoped<IPlaylistRepository, PlaylistRepository>();
 builder.Services.AddScoped<IPlaylistService, PlaylistService>();
 builder.Services.AddScoped<ISongRepository, SongRepository>();
 builder.Services.AddScoped<ISongService, SongService>();
+builder.Services.AddScoped<IArtistRepository, ArtistRepository>();
+builder.Services.AddScoped<IArtistService, ArtistService>();
+builder.Services.AddScoped<IArtistDetailRepository, ArtistDetailRepository>();
+builder.Services.AddScoped<IArtistDetailService, ArtistDetailService>();
 
 // CORS
 builder.Services.AddCors(options =>

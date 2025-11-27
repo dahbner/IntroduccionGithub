@@ -26,7 +26,7 @@ namespace MiniSpotify.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<ActionResult<ArtistDetail>> Create(CreateArtistDetailDto dto)
         {
             try
@@ -41,7 +41,7 @@ namespace MiniSpotify.Controllers
         }
 
         [HttpPut("{artistId}")]
-        [Authorize]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Update(Guid artistId, UpdateArtistDetailDto dto)
         {
             var result = await _service.UpdateAsync(artistId, dto);
