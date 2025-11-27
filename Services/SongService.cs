@@ -13,7 +13,7 @@ namespace MiniSpotify.Services
             _songRepo = songRepo;
             _albumRepo = albumRepo;
         }
-        public async Task<Song> CreateSong(CreateSongDto dto)
+        public async Task<SongResponseDto> CreateSong(CreateSongDto dto)
         {
             Album album = await _albumRepo.GetOne(dto.AlbumId);
             if (album == null) throw new Exception("Album doesnt exist.");
@@ -26,21 +26,45 @@ namespace MiniSpotify.Services
                 Album = album
             };
             await _songRepo.Add(song);
-            return song;
+            var songResponse = new SongResponseDto
+            {
+                Id = song.Id,
+                Title = song.Title,
+                DurationSeconds = song.DurationSeconds,
+                Album = album.Title
+            };
+            return songResponse;
         }
 
-        public async Task<IEnumerable<Song>> GetAll()
+        public async Task<IEnumerable<SongResponseDto>> GetAll()
         {
-            return await _songRepo.GetAll();
+            var songs=await _songRepo.GetAll();
+            var songsResponseDtos = songs.Select(song => new SongResponseDto
+            {
+                Id = song.Id,
+                Title = song.Title,
+                DurationSeconds = song.DurationSeconds,
+                Album = song.Album.Title
+            });
+            return songsResponseDtos;
         }
 
-        public async Task<Song?> GetOne(Guid id)
+        public async Task<SongResponseDto?> GetOne(Guid id)
         {
-            return await _songRepo.GetOne(id);
+            Song? song =  await _songRepo.GetOne(id);
+            if (song == null) throw new Exception("Song doesnt exist.");
+            var songResponse = new SongResponseDto
+            {
+                Id = song.Id,
+                Title = song.Title,
+                DurationSeconds = song.DurationSeconds,
+                Album = song.Album.Title
+            };
+            return songResponse;
         }
-        public async Task<Song> UpdateSong(UpdateSongDto dto, Guid id)
+        public async Task<SongResponseDto> UpdateSong(UpdateSongDto dto, Guid id)
         {
-            Song? song = await GetOne(id);
+            Song? song = await _songRepo.GetOne(id);
             if (song == null) throw new Exception("Song doesnt exist.");
             Album? album = await _albumRepo.GetOne(dto.AlbumId);
             if (album == null) throw new Exception("Album doesnt exist.");
@@ -51,7 +75,16 @@ namespace MiniSpotify.Services
             song.Album = album;
             
             await _songRepo.Update(song);
-            return song;
+            
+            var songResponse = new SongResponseDto
+            {
+                Id = song.Id,
+                Title = song.Title,
+                DurationSeconds = song.DurationSeconds,
+                Album = album.Title
+            };
+            
+            return songResponse;
         }
         public async Task DeleteSong(Guid id)
         {

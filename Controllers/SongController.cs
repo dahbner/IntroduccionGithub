@@ -19,7 +19,7 @@ namespace MiniSpotify.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllSongs()
         {
-            IEnumerable<Song> items = await _service.GetAll();
+            IEnumerable<SongResponseDto> items = await _service.GetAll();
             return Ok(items);
         }
         [HttpGet("{id:guid}")]
