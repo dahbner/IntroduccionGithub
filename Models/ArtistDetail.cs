@@ -22,7 +22,6 @@ namespace MiniSpotify.Models
         public Guid ArtistId { get; set; }
 
         [ForeignKey("ArtistId")]
-        [JsonIgnore]
         public Artist Artist { get; set; }
     }
 }
