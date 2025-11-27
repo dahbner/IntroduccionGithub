@@ -15,12 +15,19 @@ namespace MiniSpotify.Services
             _artistRepository = artistRepository;
         }
 
-        public async Task<ArtistDetail?> GetByArtistIdAsync(Guid artistId)
+        public async Task<ArtistDetailResponseDto?> GetByArtistIdAsync(Guid artistId)
         {
-            return await _repository.GetByArtistIdAsync(artistId);
+            var detail= await _repository.GetByArtistIdAsync(artistId);
+            return new ArtistDetailResponseDto
+            {
+                Id = detail.Id,
+                Biography = detail.Biography,
+                WebsiteUrl = detail.WebsiteUrl,
+                ManagerContact = detail.ManagerContact,
+            };
         }
 
-        public async Task<ArtistDetail> CreateAsync(CreateArtistDetailDto dto)
+        public async Task<ArtistDetailResponseDto> CreateAsync(CreateArtistDetailDto dto)
         {
             var artist = await _artistRepository.GetByIdAsync(dto.ArtistId);
             if (artist == null) throw new Exception("Artist not found");
@@ -35,14 +42,20 @@ namespace MiniSpotify.Services
             };
 
             await _repository.AddAsync(detail);
-            return detail;
+            return new ArtistDetailResponseDto
+            {
+                Id = detail.Id,
+                Biography = detail.Biography,
+                WebsiteUrl = detail.WebsiteUrl,
+                ManagerContact = detail.ManagerContact,
+            };
         }
 
         public async Task<bool> UpdateAsync(Guid artistId, UpdateArtistDetailDto dto)
         {
             var existingDetail = await _repository.GetByArtistIdAsync(artistId);
             if (existingDetail == null) return false;
-
+            
             existingDetail.Biography = dto.Biography;
             existingDetail.WebsiteUrl = dto.WebsiteUrl;
             existingDetail.ManagerContact = dto.ManagerContact;

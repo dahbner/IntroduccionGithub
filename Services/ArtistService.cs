@@ -13,17 +13,51 @@ namespace MiniSpotify.Services
             _repository = repository;
         }
 
-        public async Task<IEnumerable<Artist>> GetAllAsync()
+        public async Task<IEnumerable<ArtistResponseDto>> GetAllAsync()
         {
-            return await _repository.GetAllAsync();
+            var artists= await _repository.GetAllAsync();
+            return artists.Select(a => new ArtistResponseDto
+            {
+                Id = a.Id,
+                Name = a.Name,
+                Albums = a.Albums.Select(al => new AlbumResponseDto
+                {
+                    Id = al.Id,
+                    Artist = al.Artist.Name,
+                    Title = al.Title,
+                    CoverUrl = al.CoverUrl,
+                    ReleaseDate = al.ReleaseDate,
+                }).ToList()
+            }).ToList();
         }
 
-        public async Task<Artist?> GetByIdAsync(Guid id)
+        public async Task<ArtistResponseDto?> GetByIdAsync(Guid id)
         {
-            return await _repository.GetByIdAsync(id);
+            var artist = await _repository.GetByIdAsync(id);
+            return new ArtistResponseDto
+            {
+                Id = artist.Id,
+                Name = artist.Name,
+                Genre = artist.Genre,
+                ArtistDetail = new ArtistDetailResponseDto
+                {
+                    Id = artist.ArtistDetail.Id,
+                    Biography = artist.ArtistDetail.Biography,
+                    ManagerContact = artist.ArtistDetail.ManagerContact,
+                    WebsiteUrl = artist.ArtistDetail.WebsiteUrl,
+                },
+                Albums = artist.Albums.Select(al => new AlbumResponseDto
+                {
+                    Id = al.Id,
+                    Artist = al.Artist.Name,
+                    Title = al.Title,
+                    CoverUrl = al.CoverUrl,
+                    ReleaseDate = al.ReleaseDate,
+                }).ToList()
+            };
         }
 
-        public async Task<Artist> CreateAsync(CreateArtistDto dto)
+        public async Task<ArtistResponseDto> CreateAsync(CreateArtistDto dto)
         {
             var artist = new Artist
             {
@@ -33,7 +67,27 @@ namespace MiniSpotify.Services
             };
 
             await _repository.AddAsync(artist);
-            return artist;
+            return new ArtistResponseDto
+            {
+                Id = artist.Id,
+                Name = artist.Name,
+                Genre = artist.Genre,
+                ArtistDetail = new ArtistDetailResponseDto
+                {
+                    Id = artist.ArtistDetail.Id,
+                    Biography = artist.ArtistDetail.Biography,
+                    ManagerContact = artist.ArtistDetail.ManagerContact,
+                    WebsiteUrl = artist.ArtistDetail.WebsiteUrl,
+                },
+                Albums = artist.Albums.Select(al => new AlbumResponseDto
+                {
+                    Id = al.Id,
+                    Artist = al.Artist.Name,
+                    Title = al.Title,
+                    CoverUrl = al.CoverUrl,
+                    ReleaseDate = al.ReleaseDate,
+                }).ToList()
+            };
         }
 
         public async Task<bool> UpdateAsync(Guid id, UpdateArtistDto dto)

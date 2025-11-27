@@ -24,7 +24,7 @@ namespace MiniSpotify.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Artist>> GetById(Guid id)
+        public async Task<IActionResult> GetById(Guid id)
         {
             var result = await _service.GetByIdAsync(id);
             if (result == null) return NotFound();
@@ -33,7 +33,7 @@ namespace MiniSpotify.Controllers
 
         [HttpPost]
         [Authorize(Policy = "AdminOnly")]
-        public async Task<ActionResult<Artist>> Create(CreateArtistDto dto)
+        public async Task<IActionResult> Create(CreateArtistDto dto)
         {
             var result = await _service.CreateAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);

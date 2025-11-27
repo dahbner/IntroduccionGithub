@@ -5,9 +5,9 @@ namespace MiniSpotify.Services
 {
     public interface IArtistService
     {
-        Task<IEnumerable<Artist>> GetAllAsync();
-        Task<Artist?> GetByIdAsync(Guid id);
-        Task<Artist> CreateAsync(CreateArtistDto dto);
+        Task<IEnumerable<ArtistResponseDto>> GetAllAsync();
+        Task<ArtistResponseDto?> GetByIdAsync(Guid id);
+        Task<ArtistResponseDto> CreateAsync(CreateArtistDto dto);
         Task<bool> UpdateAsync(Guid id, UpdateArtistDto dto);
         Task<bool> DeleteAsync(Guid id);
     }
