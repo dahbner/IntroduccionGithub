@@ -13,7 +13,7 @@ namespace MiniSpotify.Services
             _repository = repository;
         }
 
-        public async Task<IEnumerable<ArtistResponseDto>> GetAllAsync()
+        public async Task<IEnumerable<ArtistResponseDto>> GetAllAsync() //Get All Artists
         {
             var artists = await _repository.GetAllAsync();
             return artists.Select(a => new ArtistResponseDto
