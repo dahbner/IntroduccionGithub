@@ -15,7 +15,7 @@ namespace MiniSpotify.Repositories
 
         public async Task Add(Playlist playlist)
         {
-            await _db.Playlists.AddAsync(playlist);
+            await _db.Playlists.AddAsync(playlist); 
             await _db.SaveChangesAsync();
         }
 

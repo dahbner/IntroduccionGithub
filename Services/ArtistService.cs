@@ -15,19 +15,20 @@ namespace MiniSpotify.Services
 
         public async Task<IEnumerable<ArtistResponseDto>> GetAllAsync()
         {
-            var artists= await _repository.GetAllAsync();
+            var artists = await _repository.GetAllAsync();
             return artists.Select(a => new ArtistResponseDto
             {
                 Id = a.Id,
                 Name = a.Name,
                 Genre = a.Genre,
-                ArtistDetail = new ArtistDetailResponseDto
+
+                ArtistDetail = a.ArtistDetail != null ? new ArtistDetailResponseDto
                 {
-                  Id  = a.ArtistDetail.Id,
-                  Biography = a.ArtistDetail.Biography,
-                  ManagerContact = a.ArtistDetail.ManagerContact,
-                  WebsiteUrl = a.ArtistDetail.WebsiteUrl,
-                },
+                    Id = a.ArtistDetail.Id,
+                    Biography = a.ArtistDetail.Biography,
+                    ManagerContact = a.ArtistDetail.ManagerContact,
+                    WebsiteUrl = a.ArtistDetail.WebsiteUrl,
+                } : null,
                 Albums = a.Albums.Select(al => new AlbumResponseDto
                 {
                     Id = al.Id,
@@ -35,9 +36,9 @@ namespace MiniSpotify.Services
                     Title = al.Title,
                     CoverUrl = al.CoverUrl,
                     ReleaseDate = al.ReleaseDate,
-                    Songs = al.Songs.Select(s=>new SongResponseDto
+                    Songs = al.Songs.Select(s => new SongResponseDto
                     {
-                        Id=s.Id,
+                        Id = s.Id,
                         Album = s.Album.Title,
                         Title = s.Title,
                         DurationSeconds = s.DurationSeconds
@@ -49,18 +50,21 @@ namespace MiniSpotify.Services
         public async Task<ArtistResponseDto?> GetByIdAsync(Guid id)
         {
             var artist = await _repository.GetByIdAsync(id);
+            if (artist == null) return null; 
+
             return new ArtistResponseDto
             {
                 Id = artist.Id,
                 Name = artist.Name,
                 Genre = artist.Genre,
-                ArtistDetail = new ArtistDetailResponseDto
+               
+                ArtistDetail = artist.ArtistDetail != null ? new ArtistDetailResponseDto
                 {
                     Id = artist.ArtistDetail.Id,
                     Biography = artist.ArtistDetail.Biography,
                     ManagerContact = artist.ArtistDetail.ManagerContact,
                     WebsiteUrl = artist.ArtistDetail.WebsiteUrl,
-                },
+                } : null,
                 Albums = artist.Albums.Select(al => new AlbumResponseDto
                 {
                     Id = al.Id,
@@ -68,9 +72,9 @@ namespace MiniSpotify.Services
                     Title = al.Title,
                     CoverUrl = al.CoverUrl,
                     ReleaseDate = al.ReleaseDate,
-                    Songs =  al.Songs.Select(s=>new SongResponseDto
+                    Songs = al.Songs.Select(s => new SongResponseDto
                     {
-                        Id=s.Id,
+                        Id = s.Id,
                         Album = s.Album.Title,
                         Title = s.Title,
                         DurationSeconds = s.DurationSeconds
@@ -79,6 +83,7 @@ namespace MiniSpotify.Services
             };
         }
 
+      
         public async Task<ArtistResponseDto> CreateAsync(CreateArtistDto dto)
         {
             var artist = new Artist
@@ -86,36 +91,20 @@ namespace MiniSpotify.Services
                 Id = Guid.NewGuid(),
                 Name = dto.Name,
                 Genre = dto.Genre
+               
             };
 
             await _repository.AddAsync(artist);
+
             return new ArtistResponseDto
             {
                 Id = artist.Id,
                 Name = artist.Name,
                 Genre = artist.Genre,
-                ArtistDetail = new ArtistDetailResponseDto
-                {
-                    Id = artist.ArtistDetail.Id,
-                    Biography = artist.ArtistDetail.Biography,
-                    ManagerContact = artist.ArtistDetail.ManagerContact,
-                    WebsiteUrl = artist.ArtistDetail.WebsiteUrl,
-                },
-                Albums = artist.Albums.Select(al => new AlbumResponseDto
-                {
-                    Id = al.Id,
-                    Artist = al.Artist.Name,
-                    Title = al.Title,
-                    CoverUrl = al.CoverUrl,
-                    ReleaseDate = al.ReleaseDate,
-                    Songs = al.Songs.Select(s=>new SongResponseDto
-                    {
-                        Id=s.Id,
-                        Album = s.Album.Title,
-                        Title = s.Title,
-                        DurationSeconds = s.DurationSeconds
-                    }).ToList()
-                }).ToList()
+               
+                ArtistDetail = null,
+
+                Albums = new List<AlbumResponseDto>()
             };
         }
 

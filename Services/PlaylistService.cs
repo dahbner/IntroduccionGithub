@@ -15,7 +15,7 @@ namespace MiniSpotify.Services
             _userRepo = userRepo;
         }
 
-        public async Task<PlaylistResponseDto> CreatePlaylist(CreatePlaylistDto dto, Guid userId)
+        public async Task<PlaylistResponseDto> CreatePlaylist(CreatePlaylistDto dto, Guid userId) //Este metodo se usa para crear la playlist
         {
             User? user = await _userRepo.GetById(userId);
             if (user == null) throw new KeyNotFoundException("User not found");
@@ -23,7 +23,7 @@ namespace MiniSpotify.Services
             var playlist = new Playlist
             {
                 Id = Guid.NewGuid(),
-                IsPublic = dto.IsPublic,
+                IsPublic = dto.IsPublic, 
                 Name = dto.Name,
                 UserId = userId,
             };
