@@ -51,7 +51,7 @@ namespace MiniSpotify.Services
             };
         }
 
-        public async Task<IEnumerable<PlaylistResponseDto>> GetAll(Guid userId)
+        public async Task<IEnumerable<PlaylistResponseDto>> GetAll(Guid userId) // Funcion Get All Playlists
         {
             var playlists= await _playlistRepo.GetAll(userId);
             return playlists.Select(playlist => new PlaylistResponseDto
